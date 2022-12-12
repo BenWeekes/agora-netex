@@ -150,7 +150,7 @@ var AgoraRTCNetEx = (function () {
             remoteStatus = RemoteStatusFair;
         }
 
-        console.warn(" RemoteStatus ", remoteStatus, " AvgRxNR ", _clientStatsMap.AvgRxNR, " AvgRxLoss ", _clientStatsMap.AvgRxLoss, " RecvBitrate ", _clientStatsMap.RecvBitrate, "SendBitrate ", _clientStatsMap.SendBitrate);
+        //console.warn(" RemoteStatus ", remoteStatus, " AvgRxNR ", _clientStatsMap.AvgRxNR, " AvgRxLoss ", _clientStatsMap.AvgRxLoss, " RecvBitrate ", _clientStatsMap.RecvBitrate, "SendBitrate ", _clientStatsMap.SendBitrate);
         sendRTM(remoteStatus, _clientStatsMap.RecvBitrate);
 
         if (_monitorRemoteCallStatsInterval) {
@@ -240,11 +240,11 @@ var AgoraRTCNetEx = (function () {
             if critical drop to larger %  but make sure below BR in poor message
             // more than one publisher?
             */
-
+            //console.log("tim u d f ",(Date.now() - _br_last_upgrade),(Date.now() - _br_last_downgrade),(Date.now() - _br_last_fair ));
 
             if (status == RemoteStatusGood) {
                 // 10% increase every 2 seconds while good 
-                if (Date.now() - _br_last_downgrade > 5000 && Date.now() - _br_last_upgrade > 2000) {
+                if ((Date.now() - _br_last_downgrade > 5000) && (Date.now() - _br_last_upgrade > 2000)) {
                     // if no downgrade for 10s or fair for 10s go faster
                     var proposed = _br_current * 1.05;
                     if (Date.now() - _br_last_downgrade > 12000 && Date.now() - _br_last_fair > 8000) {
@@ -253,6 +253,7 @@ var AgoraRTCNetEx = (function () {
                         proposed = _br_current * 1.1;
                     }
                     changeHighStream(proposed);
+                    //console.log("setEncoderConfiguration good diff "+ (Date.now() - _br_last_downgrade > 5000));
                     _br_last_upgrade = Date.now();
                 }
             } else if (status == RemoteStatusFair) {
