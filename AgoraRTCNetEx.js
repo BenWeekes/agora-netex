@@ -246,10 +246,13 @@ var AgoraRTCNetEx = (function () {
                 // 10% increase every 2 seconds while good 
                 if (Date.now() - _br_last_downgrade > 5000 && Date.now() - _br_last_upgrade > 2000) {
                     // if no downgrade for 10s or fair for 10s go faster
-                    var proposed = _br_current * 1.1;
-                    if (Date.now() - _br_last_downgrade > 10000 && Date.now() - _br_last_fair > 5000) {
+                    var proposed = _br_current * 1.05;
+                    if (Date.now() - _br_last_downgrade > 8000 && Date.now() - _br_last_fair > 4000) {
+                        proposed = _br_current * 1.1;
+                    } else if (Date.now() - _br_last_downgrade > 12000 && Date.now() - _br_last_fair > 8000) {
                         proposed = _br_current * 1.2;
                     }
+
                     changeHighStream(proposed);
                     _br_last_upgrade = Date.now();
 
