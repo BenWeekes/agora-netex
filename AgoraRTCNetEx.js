@@ -247,15 +247,13 @@ var AgoraRTCNetEx = (function () {
                 if (Date.now() - _br_last_downgrade > 5000 && Date.now() - _br_last_upgrade > 2000) {
                     // if no downgrade for 10s or fair for 10s go faster
                     var proposed = _br_current * 1.05;
-                    if (Date.now() - _br_last_downgrade > 8000 && Date.now() - _br_last_fair > 4000) {
-                        proposed = _br_current * 1.1;
-                    } else if (Date.now() - _br_last_downgrade > 12000 && Date.now() - _br_last_fair > 8000) {
+                    if (Date.now() - _br_last_downgrade > 12000 && Date.now() - _br_last_fair > 8000) {
                         proposed = _br_current * 1.2;
+                    } else if (Date.now() - _br_last_downgrade > 8000 && Date.now() - _br_last_fair > 4000) {
+                        proposed = _br_current * 1.1;
                     }
-
                     changeHighStream(proposed);
                     _br_last_upgrade = Date.now();
-
                 }
             } else if (status == RemoteStatusFair) {
                 //ok do nothing just now
@@ -274,7 +272,6 @@ var AgoraRTCNetEx = (function () {
                     _br_last_downgrade = Date.now();
                 }
             }
-            //console.log("receiveRTM ", senderId, text);
         }
     }
 
