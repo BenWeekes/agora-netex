@@ -22,7 +22,7 @@ optimizeNetworkControl(client, rtm_appid, rtm_token, br_min, br_max)
 
 client         The AgoraRTC client object returned from createClient method.     
 rtm_appid      The RTM AppId to connect into an RTM channel.     
-rtm_token      The RTM token to connect into an RTM channel (if tokens are enabled for this appid)       
+rtm_token      The RTM token to connect into an RTM channel (if tokens are enabled for this appid otherwise pass null)       
 br_min         The lowest bitrate a client will encode at. Below this subscribers could move to a low stream alternative.       
 br_max         The highest bitrate a client will encode at. Below this subscribers could move to a low stream alternative.       
 </pre>
