@@ -1,6 +1,6 @@
 
 ## AgoraRTCNetEx.js
-This javascript module provides an 'Out of band' bandwidth adaptation algorithms to work alongside the AgoraRTC 4.x SDK.
+This javascript module provides an 'Out of band' bandwidth adaptation algorithm to work alongside the AgoraRTC 4.x SDK.
 It can produce better results than the standard webrtc alogirthm which can be oversensitive for some real-time engagement applications. 
 
 #### Include the javascript:
