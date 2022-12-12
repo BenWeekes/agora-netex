@@ -1,10 +1,7 @@
-# agora-netex
-Out of band bandwidth adaptation 
-
 
 ## AgoraRTCNetEx.js
-This javascript module provides some useful algorithms to work with the AgoraRTC 4.x SDK
-These utils are all used in this reference app and you can refer to [../app.js](../app.js) for more detail.
+This javascript module provides an 'Out of band' bandwidth adaptation algorithms to work alongside the AgoraRTC 4.x SDK.
+It can produce better results than the standard webrtc alogirthm which can be oversensitive for some real-time engagement applications. 
 
 #### Include the javascript:
 
@@ -16,11 +13,7 @@ Before publishing your video to the channel, call the optimizeNetworkControl met
 
   AgoraRTCNetEx.optimizeNetworkControl(client,options.appid,null, 300, 3000);       
   
-
-  Pass the min and max bitrates you wish to move between and match your selected profile or encoder configuration.      
-  
-      
-  
+Pass in the min and max bitrates that you wish to move between and match those of your selected profile.     
   
 ## Function arguments      
 
