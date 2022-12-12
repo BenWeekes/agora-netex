@@ -1,4 +1,10 @@
 var AgoraRTCNetEx = (function () {
+
+    const RemoteStatusGood = 0;
+    const RemoteStatusFair = 1;
+    const RemoteStatusPoor = 2;
+    const RemoteStatusCritical = 3;
+
     var _rtc_clients = [];
     var _rtc_num_clients = 0;
     var _rtm_appid = null;
@@ -13,10 +19,6 @@ var AgoraRTCNetEx = (function () {
     var _monitorStart = Date.now();
     var _monitorEnd = Date.now();
 
-    const RemoteStatusGood = 0;
-    const RemoteStatusFair = 1;
-    const RemoteStatusPoor = 2;
-    const RemoteStatusCritical = 3;
 
     var _br_min;
     var _br_max;
@@ -24,6 +26,7 @@ var AgoraRTCNetEx = (function () {
     var _br_last_downgrade = Date.now();
     var _br_last_upgrade = Date.now();
     var _br_last_fair = Date.now();
+    var _br_last_downgrade_status=-1;
 
     async function monitorRemoteCallStats() {
         _clientStatsMap = {
@@ -139,7 +142,7 @@ var AgoraRTCNetEx = (function () {
         _clientStatsMap.StatsRunTime = (_monitorEnd - _monitorStart);
 
         let remoteStatus = RemoteStatusGood;
-        if (_clientStatsMap.AvgRxNR > 30) {
+        if (_clientStatsMap.AvgRxNR > 20) {
             remoteStatus = RemoteStatusCritical;
         } else if (_clientStatsMap.AvgRxNR > 10) {
             remoteStatus = RemoteStatusPoor;
@@ -147,7 +150,7 @@ var AgoraRTCNetEx = (function () {
             remoteStatus = RemoteStatusFair;
         }
 
-        //console.warn(" RemoteStatus ", remoteStatus, " AvgRxNR ", _clientStatsMap.AvgRxNR, " AvgRxLoss ", _clientStatsMap.AvgRxLoss, " RecvBitrate ", _clientStatsMap.RecvBitrate, "SendBitrate ", _clientStatsMap.SendBitrate);
+        console.warn(" RemoteStatus ", remoteStatus, " AvgRxNR ", _clientStatsMap.AvgRxNR, " AvgRxLoss ", _clientStatsMap.AvgRxLoss, " RecvBitrate ", _clientStatsMap.RecvBitrate, "SendBitrate ", _clientStatsMap.SendBitrate);
         sendRTM(remoteStatus, _clientStatsMap.RecvBitrate);
 
         if (_monitorRemoteCallStatsInterval) {
@@ -167,7 +170,7 @@ var AgoraRTCNetEx = (function () {
             receiveRTM(senderId, text);
         });
 
-        _rtmClient.login({ token: null, uid: "RTM_" + _rtc_clients[0]._uid }).then(() => {
+        _rtmClient.login({ token: _rtm_token, uid: "RTM_" + _rtc_clients[0]._uid }).then(() => {
 
             _rtmChannel = _rtmClient.createChannel(_rtc_clients[0]._channelName);
             _rtmChannel.join().then(() => {
@@ -255,14 +258,15 @@ var AgoraRTCNetEx = (function () {
                 //ok do nothing just now
                 _br_last_fair = Date.now();
             } else if (status == RemoteStatusPoor || status == RemoteStatusCritical) {
-                var proposed = _br_current * 0.9;
+                var proposed = _br_current * 0.8;
                 if (status == RemoteStatusCritical) {
-                    proposed = _br_current * 0.7;
+                    proposed = _br_current * 0.6;
                     if (proposed > bitrate) {
                         proposed = bitrate;
                     }
                 }
-                if (Date.now() - _br_last_downgrade > 2000) {
+                if (Date.now() - _br_last_downgrade > 2000 ||  (status == RemoteStatusCritical && _br_last_downgrade_status==RemoteStatusPoor) ) {
+                    _br_last_downgrade_status=status;
                     changeHighStream(proposed);
                     _br_last_downgrade = Date.now();
                 }
