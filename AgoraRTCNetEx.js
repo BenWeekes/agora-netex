@@ -24,7 +24,7 @@ var AgoraRTCNetEx = (function () {
     var _br_last_downgrade = Date.now();
     var _br_last_upgrade = Date.now();
     var _br_last_fair = Date.now();
-    
+
     async function monitorRemoteCallStats() {
         _clientStatsMap = {
             RemoteSubCount: 0,
@@ -202,25 +202,25 @@ var AgoraRTCNetEx = (function () {
 
     async function changeHighStream(bitrate) {
 
-        bitrate=Math.round(bitrate);
+        bitrate = Math.round(bitrate);
 
         if (bitrate < _br_min) {
-            bitrate=_br_min;
+            bitrate = _br_min;
         }
 
         if (bitrate > _br_max) {
-            bitrate=_br_max;
+            bitrate = _br_max;
         }
-        
-        if (_br_current==bitrate) {
+
+        if (_br_current == bitrate) {
             return;
         }
-        await client._p2pChannel.localTrackMap.get("videoTrack").track.setEncoderConfiguration({bitrateMax:bitrate}).then(()=>{
-            _br_current=bitrate;
-            console.log(" setEncoderConfiguration  br: ",_br_current );
+        await client._p2pChannel.localTrackMap.get("videoTrack").track.setEncoderConfiguration({ bitrateMax: bitrate }).then(() => {
+            _br_current = bitrate;
+            console.log(" setEncoderConfiguration  br: ", _br_current);
         }).catch(error => {
-                console.error(' setEncoderConfiguration error: ', error);
-              });                
+            console.error(' setEncoderConfiguration error: ', error);
+        });
     }
 
     function receiveRTM(senderId, text) {
@@ -229,50 +229,44 @@ var AgoraRTCNetEx = (function () {
             var status = parseInt(msplit[1]);
             var bitrate = parseInt(msplit[2]);
 
-
-            // good/fair/poor/critical
-
+            // states: good/fair/poor/critical
             /*
-            if good and nothing non good in last X (2) seconds increase by %
+            if good and nothing other than good in last X (2) seconds increase by %
             if fair hold - ignore 
-            if poor drop by % but make sure below BR in poor message
+            if poor drop by %
             if critical drop to larger %  but make sure below BR in poor message
             // more than one publisher?
             */
 
 
-            if (status==RemoteStatusGood) {
+            if (status == RemoteStatusGood) {
                 // 10% increase every 2 seconds while good 
-                if (Date.now() - _br_last_downgrade > 5000 && Date.now() - _br_last_upgrade >2000)  {
+                if (Date.now() - _br_last_downgrade > 5000 && Date.now() - _br_last_upgrade > 2000) {
                     // if no downgrade for 10s or fair for 10s go faster
-                    var proposed=_br_current*1.1; 
-                    if (Date.now() - _br_last_downgrade > 10000 && Date.now() - _br_last_fair >5000)  {
-                        proposed=_br_current*1.2; 
+                    var proposed = _br_current * 1.1;
+                    if (Date.now() - _br_last_downgrade > 10000 && Date.now() - _br_last_fair > 5000) {
+                        proposed = _br_current * 1.2;
                     }
                     changeHighStream(proposed);
                     _br_last_upgrade = Date.now();
 
                 }
-            } else if (status==RemoteStatusFair) {
+            } else if (status == RemoteStatusFair) {
                 //ok do nothing just now
                 _br_last_fair = Date.now();
-            } else if (status==RemoteStatusPoor || status==RemoteStatusCritical) {    
-                var proposed=_br_current*0.9;
-                if (status==RemoteStatusCritical) {
-                    proposed=_br_current*0.7;
-                    if (proposed>bitrate) {
-                        proposed=bitrate;
+            } else if (status == RemoteStatusPoor || status == RemoteStatusCritical) {
+                var proposed = _br_current * 0.9;
+                if (status == RemoteStatusCritical) {
+                    proposed = _br_current * 0.7;
+                    if (proposed > bitrate) {
+                        proposed = bitrate;
                     }
                 }
-
                 if (Date.now() - _br_last_downgrade > 2000) {
                     changeHighStream(proposed);
                     _br_last_downgrade = Date.now();
-
                 }
             }
-
-
             //console.log("receiveRTM ", senderId, text);
         }
     }
@@ -282,9 +276,9 @@ var AgoraRTCNetEx = (function () {
         optimizeNetworkControl: function (client, rtm_appid, rtm_token, br_min, br_max) {
             _rtc_clients[0] = client;
             _rtc_num_clients = 1;
-            _br_min=br_min;
-            _br_max=br_max;
-            _br_current=br_max;
+            _br_min = br_min;
+            _br_max = br_max;
+            _br_current = br_max;
             _monitorRemoteCallStatsInterval = true;
             _remoteCallStatsMonitorFrequency = 500;
             _rtm_appid = rtm_appid;
