@@ -18,7 +18,8 @@ Pass in the min and max bitrates that you wish to move between and match those o
 ## Function arguments      
 
 <pre>
-optimizeNetworkControl(client, rtm_appid, rtm_token, br_min, br_max)
+
+optimizeNetworkControl(client, rtm_appid, rtm_token, br_min, br_max);
 
 client         The AgoraRTC client object returned from createClient method.     
 rtm_appid      The RTM AppId to connect into an RTM channel.     
