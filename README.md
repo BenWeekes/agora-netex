@@ -26,7 +26,7 @@ br_max         The highest bitrate a client will encode at. Below this subscribe
 </pre>
 
 
-#### Demo
+#### Web Demo
 https://sa-utils.agora.io/agora-netex/index.html
 
 #### Demo Videos
