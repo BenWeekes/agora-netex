@@ -9,17 +9,14 @@ It can produce better results than the standard webrtc alogirthm which can be ov
                 
 #### Call the method 
 
-Before publishing your video to the channel, call the optimizeNetworkControl method:
-
-  AgoraRTCNetEx.optimizeNetworkControl(client,options.appid,null, 300, 3000);       
-  
-Pass in the min and max bitrates that you wish to move between and match those of your selected profile.     
+Before publishing your video to the channel, call the optimizeNetworkControl() method.         
+Pass in the min and max bit rates that you wish the high stream encoder to move between and which match those of your selected profile.     
   
 ## Function arguments      
 
 <pre>
 
-optimizeNetworkControl(client, rtm_appid, rtm_token, br_min, br_max);
+AgoraRTCNetEx.optimizeNetworkControl(client, rtm_appid, rtm_token, br_min, br_max);
 
 client         The AgoraRTC client object returned from createClient method.     
 rtm_appid      The RTM AppId to connect into an RTM channel.     
