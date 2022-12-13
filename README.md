@@ -40,3 +40,7 @@ https://drive.google.com/file/d/1KQ2kqxnAGQdyVxYBc7jX5khIwyF7vMqw/view?usp=shari
 Mac - iOS 
 https://drive.google.com/file/d/10TJpSpex5E_baM26rqxnb1d9alIyA7lS/view?usp=sharing
 
+
+#### Further enhancements   
+Test further when more than 2 hosts publishing in channel.      
+Switch subscriber to low stream if inbound bitrate below br_min.    
