@@ -159,6 +159,32 @@ var AgoraRTCNetEx = (function () {
             }, _remoteCallStatsMonitorFrequency);
         }
     }
+    
+    
+   function uplinkStatus(client, minBitrate, fps, width, height){ 
+         for (var i = 0; i < _rtc_num_clients; i++) {
+           var client = _rtc_clients[i];
+           const outboundStats = client.getLocalVideoStats();
+           const clientStats = client.getRTCStats();
+           const outboundBitrate=outboundStats.sendBitrate; // bps
+           const outboundFrameRate=outboundStats.sendFrameRate; // fps
+           const outboundResolutionWidth=outboundStats.sendResolutionWidth; // width
+           const outboundResolutionHeight=outboundStats.sendResolutionHeight; // height
+           const outboundEstimatedBitrate=clientStats.OutgoingAvailableBandwidth; // kbps // fps or resolution is lower than expected
+           if (outboundFrameRate < fps*0.9 || width!=outboundResolutionWidth || height!=outboundResolutionHeight) {
+               if (outboundEstimatedBitrate*1000<minBitrate) {
+                // chrome has very low estimated outbound bitrate - the network is bad
+               console.log("uplink network poor");
+               } else {
+                // must be due to low compute resources
+               console.log("compute low");
+               }
+           } else {
+               console.log("all good");
+           }
+        }
+    }
+    
     // End Network Statistics
 
     async function initRTM() {
