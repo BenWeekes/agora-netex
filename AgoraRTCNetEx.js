@@ -162,6 +162,7 @@ var AgoraRTCNetEx = (function () {
     
     
    function uplinkStatus(client, minBitrate, fps, width, height){ 
+	   // minBitrate in bits per second
            const outboundStats = client.getLocalVideoStats();
            const clientStats = client.getRTCStats();
            const outboundBitrate=outboundStats.sendBitrate; // bps
