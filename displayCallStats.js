@@ -79,6 +79,7 @@ async function join() {
 
   // publish local tracks to channel
   AgoraRTCNetEx.optimizeNetworkControl(client,options.appid,null, 300, 3000);
+  AgoraRTCNetEx.monitorUplink(client, 500, 30, 1920, 1080);
 
   await client.publish(Object.values(localTracks));
   console.log("publish success");
@@ -208,6 +209,7 @@ function flushStats() {
     // get the remote track stats message
     const remoteTracksStats = { video: client.getRemoteVideoStats()[uid], audio: client.getRemoteAudioStats()[uid] };
     const remoteTracksStatsList = [
+      { description: "Receiving video bit rate", value: remoteTracksStats.video.receiveBitrate, unit: "bps" },
       { description: "Delay of audio from sending to receiving", value: Number(remoteTracksStats.audio.receiveDelay).toFixed(2), unit: "ms" },
       { description: "Delay of video from sending to receiving", value: Number(remoteTracksStats.video.receiveDelay).toFixed(2), unit: "ms" },
       { description: "Total audio bytes received", value: remoteTracksStats.audio.receiveBytes, unit: "bytes" },
@@ -216,7 +218,6 @@ function flushStats() {
       { description: "Total audio packets loss rate", value: Number(remoteTracksStats.audio.packetLossRate).toFixed(3), unit: "%" },
       { description: "Video received resolution height", value: remoteTracksStats.video.receiveResolutionHeight, unit: "" },
       { description: "Video received resolution width", value: remoteTracksStats.video.receiveResolutionWidth, unit: "" },
-      { description: "Receiving video bit rate", value: remoteTracksStats.video.receiveBitrate, unit: "bps" },
       { description: "Total video bytes received", value: remoteTracksStats.video.receiveBytes, unit: "bytes" },
       { description: "Total video packets received", value: remoteTracksStats.video.receivePackets, unit: "" },
       { description: "Total video packets loss", value: remoteTracksStats.video.receivePacketsLost, unit: "" },

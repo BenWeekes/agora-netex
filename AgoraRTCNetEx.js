@@ -154,7 +154,7 @@ var AgoraRTCNetEx = (function () {
         sendRTM(remoteStatus, _clientStatsMap.RecvBitrate);
 
         if (_monitorRemoteCallStatsInterval) {
-            setTimeout(() => {
+            setInterval(() => {
                 monitorRemoteCallStats();
             }, _remoteCallStatsMonitorFrequency);
         }
@@ -162,8 +162,6 @@ var AgoraRTCNetEx = (function () {
     
     
    function uplinkStatus(client, minBitrate, fps, width, height){ 
-         for (var i = 0; i < _rtc_num_clients; i++) {
-           var client = _rtc_clients[i];
            const outboundStats = client.getLocalVideoStats();
            const clientStats = client.getRTCStats();
            const outboundBitrate=outboundStats.sendBitrate; // bps
@@ -182,7 +180,6 @@ var AgoraRTCNetEx = (function () {
            } else {
                console.log("all good");
            }
-        }
     }
     
     // End Network Statistics
@@ -319,6 +316,11 @@ var AgoraRTCNetEx = (function () {
                 monitorRemoteCallStats();
             }, _remoteCallStatsMonitorFrequency);
         },
+	monitorUplink: function (client, minBitrate, fps, width, height) {
+	    setInterval(() => {
+                uplinkStatus(client, minBitrate, fps, width, height);
+            }, 2000);
+	},
         RemoteStatusGood: RemoteStatusGood,
         RemoteStatusFair: RemoteStatusFair,
         RemoteStatusPoor: RemoteStatusPoor,
